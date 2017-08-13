@@ -11,52 +11,55 @@ class App extends Component {
             currID: -1,
             currTitle: '',
             currLink: '',
-            currAttr: [],   // [artist, movement] for simplicity's sake
+            currAttr: ['',''],   // [artist, movement] for simplicity's sake
         };
     }
 
     componentDidMount() {
-        const ref = firebase.database().ref();
+        var ref = firebase.database().ref();
+        var artRef = ref.child("artPieces");
 
-        ref.on("value", snapshot => {
-            if (snapshot.child("btnClick").val() == 100) return;
-            if (snapshot.child("btnClick").val() != 0 && this.state.currID >= 0) {
-                ref.child("artPieces").on("value", childSnap => {
-                    var i = snapshot.child("btnClick").val();
+        ref.on("child_changed", snapshot => {
+            const btnVal = snapshot.val();
+            if (btnVal < 2) {
+                artRef.once("value").then(childSnap => {
+                    var maxScore = Number.MIN_SAFE_INTEGER;
+                    var idToDisplay = -1;
+                    var seen = this.state.seenIDs;
+
                     childSnap.forEach(grandchildSnap => {
-                        window.alert(grandchildSnap.child("artist").val() == "hi");
                         var score = grandchildSnap.child("score").val();
-                        if (grandchildSnap.child("artist").val().equals(this.state.currAttr[0])) {
-                            score += i;
+                        var id = grandchildSnap.key;
+
+                        //updating score
+                        if (grandchildSnap.child("artist").val() === this.state.currAttr[0]) {
+                            score += btnVal;
                         }
-                        if (grandchildSnap.child("movement").val().equals(this.state.currAttr[1])) {
-                            score += i;
+                        if (grandchildSnap.child("movement").val() === this.state.currAttr[1]) {
+                            score += btnVal;
                         }
-                        grandchildSnap.child("score").set(score);
+
+                        //updating max score
+                        if (score > maxScore && seen.indexOf(id) < 0) {
+                            maxScore = score;
+                            idToDisplay = id;
+                        }
+                        artRef.child(grandchildSnap.key).update({score: score});
+                    });
+                    //updating state 
+                    const idStr = idToDisplay.toString();
+                    const title = childSnap.child(idStr).child("title").val();
+                    const link = childSnap.child(idStr).child("link").val();
+                    const artist = childSnap.child(idStr).child("artist").val();
+                    const movement = childSnap.child(idStr).child("movement").val();
+                    seen.push(idToDisplay);
+                    this.setState({
+                        currTitle: title, currLink: link, currID: idToDisplay,
+                        currAttr: [artist, movement], seenIDs: seen
                     });
                 });
             }
-
-            var maxScore = Number.MIN_SAFE_INTEGER;
-            var idToDisplay = -1;
-            ref.child("artPieces").on("value", childSnap => {
-                childSnap.forEach(grandchildSnap => {
-                    var score = grandchildSnap.child("score").val();
-                    var id = grandchildSnap.key;
-                    if (score > maxScore && this.state.seenIDs.indexOf(id) < 0) {
-                        maxScore = score;
-                        idToDisplay = id;
-                    }
-                });
-                var title = childSnap.child(idToDisplay.toString()).child("title").val();
-                var link = childSnap.child(idToDisplay.toString()).child("link").val();
-                var artist = childSnap.child(idToDisplay.toString()).child("artist").val();
-                var movement = childSnap.child(idToDisplay.toString()).child("movement").val();
-                this.setState({currTitle: title, currLink: link, currID: idToDisplay, currAttr: [artist, movement],
-                    seenIDs: this.state.seenIDs.push(idToDisplay)});
-            });
         });
-
     }
 
     likeClick() {
@@ -73,15 +76,17 @@ class App extends Component {
     }
 
     render() {
+        var arr = this.state.currAttr;
+        var artist = arr[0];
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-sm-5" id="image">
-                        <img src={this.state.currLink} className="pull-right"/>
+                        <img src={this.state.currLink} alt={this.state.currTitle} className="pull-right"/>
                     </div>
                     <div className="col-sm-7" id="info">
-                        <h2 id="infoHeader">{this.state.currTitle}</h2>
-                        <p id="infoText">lorem ipsum bleh bleh bleh</p>
+                        <h2 id="infoHeader">{artist}, {this.state.currTitle}</h2>
+                        <p id="infoText">description of artwork here</p>
                         <button type="button" className="btn btn-outline" onClick={this.likeClick}>Like</button>
                         <button type="button" className="btn btn-outline" onClick={this.neutralClick}>Neutral</button>
                         <button type="button" className="btn btn-outline" onClick={this.dislikeClick}>Dislike</button>
