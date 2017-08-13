@@ -8,98 +8,80 @@ class App extends Component {
         super();
         this.state = {
             seenIDs: [],
-            countSeen: 0,
-            currID: null,
+            currID: -1,
             currAttr: [],   // [artist, movement] for simplicity's sake
-            btnVal: null
         };
     }
 
     componentDidMount() {
-        //const ref = firebase.database().ref("artPieces/0");
-        const ref = firebase.database().ref("countSeen");
+        const ref = firebase.database().ref();
+
         ref.on("value", snapshot => {
-            this.setState
-        })
-    }
+            if (snapshot.child("btnClick").val() == 100) return;
+            if (snapshot.child("btnClick").val() != 0) {
+                ref.child("artPieces").on("value", childSnap => {
+                    childSnap.forEach(grandchildSnap => {
+                        var score = grandchildSnap.child("score").val();
+                        if (grandchildSnap.child("artist").equals(this.state.currAttr[0])) {
+                            score += i;
+                        }
+                        if (grandchildSnap.child("movement").equals(this.state.currAttr[1])) {
+                            score += i;
+                        }
+                        grandchildSnap.child("score").set(score);
+                    });
+                });
+            }
 
-    clickHandle(i) {
-        this.updateScores(i);
-        this.findArt();
-        // TODO: state needs to change for re-rendering... what to do with result of findArt() ?
-    }
-
-    updateScores(i) {
-        const query = firebase.database().ref("artPieces");
-        query.once("value").then(snapshot => {
-            snapshot.forEach(childSnapshot => {
-                var score = childSnapshot.child("score").val();
-                if (childSnapshot.child("artist").equals(this.state.currAttr[0])) {
-                    score += i;
-                }
-                if (childSnapshot.child("movement").equals(this.state.currAttr[1])) {
-                    score += i;
-                }
-                childSnapshot.child("score").set(score);
+            var maxScore = Number.MIN_SAFE_INTEGER;
+            var idToDisplay = -1;
+            // TODO: is once function right thing to use here????
+            ref.child("artPieces").on("value", childSnap => {
+                childSnap.forEach(grandchildSnap => {
+                    var score = grandchildSnap.child("score").val();
+                    var id = grandchildSnap.key;
+                    if (score > maxScore && this.state.seenIDs.indexOf(id) < 0) {
+                        maxScore = score;
+                        idToDisplay = id;
+                    }
+                });
             });
+
         });
+
     }
 
-    findArt() {
-        var maxScore = Number.MIN_SAFE_INTEGER;
-        var idToDisplay = -1;
-        var query = firebase.database().ref("artPieces");
-        query.once("value").then(snapshot => {
-            snapshot.forEach(childSnapshot => {
-                var score = childSnapshot.child("score").val();
-                var id = childSnapshot.key;
-                if (score > maxScore && this.state.seenIDs.indexOf(id) < 0) {
-                    maxScore = score;
-                    idToDisplay = id;
-                }
-            });
-        });
-        return idToDisplay;
+    likeClick() {
+        firebase.database().ref().child("btnClick").set(100);
+        firebase.database().ref().child("btnClick").set(1);
+    }
+    neutralClick() {
+        firebase.database().ref().child("btnClick").set(100);
+        firebase.database().ref().child("btnClick").set(0);
+    }
+    dislikeClick() {
+        firebase.database().ref().child("btnClick").set(100);
+        firebase.database().ref().child("btnClick").set(-1);
     }
 
     render() {
-        this.updateScores(this.state.btnVal);
-        this.findArt();
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-sm-6" id="image">
-                        <Image/>
+                        <h2>image</h2>
                     </div>
                     <div className="col-sm-6" id="info">
-                        <Info/>
-                        <button type="button" className="btn btn-outline" onClick={this.setState({btnVal: 1})}>Like</button>
-                        <button type="button" className="btn btn-outline" onClick={this.setState({btnVal: 0})}>Neutral</button>
-                        <button type="button" className="btn btn-outline" onClick={this.setState({btnVal: -1})}>Dislike</button>
+                        <h2 id="infoHeader">Title, Artist</h2>
+                        <p id="infoText">lorem ipsum bleh bleh bleh</p>
+                        <button type="button" className="btn btn-outline" onClick={this.likeClick}>Like</button>
+                        <button type="button" className="btn btn-outline" onClick={this.neutralClick}>Neutral</button>
+                        <button type="button" className="btn btn-outline" onClick={this.dislikeClick}>Dislike</button>
                     </div>
                 </div>
             </div>
         )
     }
 }
-
-class Image extends Component {
-    render() {
-        return (<h3>image</h3>)
-        // should get attr as key-vals from App
-    }
-}
-
-class Info extends Component {
-    render() {
-        return (
-            <div>
-                <h2 id="infoHeader">Title, Artist</h2>
-                <p id="infoText"></p>
-            </div>
-        )
-    }
-}
-
 
 export default App;
