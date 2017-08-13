@@ -46,7 +46,7 @@ class App extends Component {
                         }
                         artRef.child(grandchildSnap.key).update({score: score});
                     });
-                    //updating state 
+                    //updating state
                     const idStr = idToDisplay.toString();
                     const title = childSnap.child(idStr).child("title").val();
                     const link = childSnap.child(idStr).child("link").val();
@@ -78,18 +78,21 @@ class App extends Component {
     render() {
         var arr = this.state.currAttr;
         var artist = arr[0];
+        var movement = arr[1];
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-sm-5" id="image">
-                        <img src={this.state.currLink} alt={this.state.currTitle} className="pull-right"/>
+                    <div className="col-sm-6" id="image">
+                        <img src={this.state.currLink} alt={this.state.currTitle} className="img-responsive"/>
                     </div>
-                    <div className="col-sm-7" id="info">
-                        <h2 id="infoHeader">{artist}, {this.state.currTitle}</h2>
-                        <p id="infoText">description of artwork here</p>
-                        <button type="button" className="btn btn-outline" onClick={this.likeClick}>Like</button>
-                        <button type="button" className="btn btn-outline" onClick={this.neutralClick}>Neutral</button>
-                        <button type="button" className="btn btn-outline" onClick={this.dislikeClick}>Dislike</button>
+                    <div className="col-sm-6" id="info">
+                        <h3 id="infoHeader">{artist}, <span id="title">{this.state.currTitle}</span></h3>
+                        <p id="infoText">{movement}</p>
+                        <div id="buttons">
+                            <button type="button" onClick={this.likeClick}><i className="fa fa-smile-o" aria-hidden="true"></i></button>
+                            <button type="button" onClick={this.neutralClick}><i className="fa fa-meh-o" aria-hidden="true"></i></button>
+                            <button type="button" onClick={this.dislikeClick}><i className="fa fa-frown-o" aria-hidden="true"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
