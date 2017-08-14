@@ -41,6 +41,7 @@ button {
 #buttons {
   position: absolute;
   bottom: 0;
+  font-size: 17px;
 }
 
 p {

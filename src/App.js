@@ -19,7 +19,31 @@ class App extends Component {
         var ref = firebase.database().ref();
         var artRef = ref.child("artPieces");
 
+        // finding random art piece to display initially and resetting scores to 0
+        artRef.once("value").then(snapshot => {
+            var len = 0;
+            snapshot.forEach(childSnap => {
+                artRef.child(childSnap.key).update({score: 0});
+                len += 1;
+            });
+
+            var random = Math.floor(Math.random() * len);
+            var title = snapshot.child(random.toString()).child("title").val();
+            var link = snapshot.child(random.toString()).child("link").val();
+            var artist = snapshot.child(random.toString()).child("artist").val();
+            var movement = snapshot.child(random.toString()).child("movement").val();
+            var arr = this.state.seenIDs;
+            arr.push(random);
+            this.setState({
+                currTitle: title, currLink: link, currID: random,
+                currAttr: [artist, movement], seenIDs: arr
+            });
+        });
+
+        // event listener for button click
         ref.on("child_changed", snapshot => {
+            var arr = this.state.seenIDs;
+            console.log(arr);
             const btnVal = snapshot.val();
             if (btnVal < 2) {
                 artRef.once("value").then(childSnap => {
@@ -29,7 +53,7 @@ class App extends Component {
 
                     childSnap.forEach(grandchildSnap => {
                         var score = grandchildSnap.child("score").val();
-                        var id = grandchildSnap.key;
+                        var id = parseInt(grandchildSnap.key);
 
                         //updating score
                         if (grandchildSnap.child("artist").val() === this.state.currAttr[0]) {
@@ -38,9 +62,8 @@ class App extends Component {
                         if (grandchildSnap.child("movement").val() === this.state.currAttr[1]) {
                             score += btnVal;
                         }
-
                         //updating max score
-                        if (score > maxScore && seen.indexOf(id) < 0) {
+                        if ((seen.indexOf(id) < 0) && (score > maxScore)) {
                             maxScore = score;
                             idToDisplay = id;
                         }
