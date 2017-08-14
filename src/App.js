@@ -8,7 +8,7 @@ class App extends Component {
         super();
         this.state = {
             seenIDs: [],
-            currID: -1,
+            currID: 100,
             currTitle: '',
             currLink: '',
             currAttr: ['',''],   // [artist, movement] for simplicity's sake
@@ -98,7 +98,33 @@ class App extends Component {
         firebase.database().ref().child("btnClick").set(-1);
     }
 
+    renderLast() {
+        return (
+            <h2>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-sm-6" id="image">
+                            <img src="http://www.rookiemag.com/wp-content/uploads/2015/04/1430190142Cynthia-Weezer-Text-by-Jenny.jpg"
+                                 alt="" className="img-responsive"/>
+                        </div>
+                        <div className="col-sm-6" id="info">
+                            <h3 id="infoHeader">Hope you enjoyed this!</h3>
+                            <p id="infoText">Check out my <a href="https://ellinzhao.github.io/holzer-truisms/display.html">Jenny Holzer homage</a> for more art!</p>
+                            <div id="hearts">
+                                <i className="fa fa-heart" aria-hidden="true"></i> &emsp;
+                                <i className="fa fa-heart" aria-hidden="true"></i> &emsp;
+                                <i className="fa fa-heart" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h2>
+        );
+    }
+
     render() {
+        if (this.state.currID === -1) return this.renderLast();
+        if (this.state.currID === 100) return (<div></div>);
         var arr = this.state.currAttr;
         var artist = arr[0];
         var movement = arr[1];
@@ -119,7 +145,7 @@ class App extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

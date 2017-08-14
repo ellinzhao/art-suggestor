@@ -51,3 +51,13 @@ p {
 #image {
   height: 80vh;
 }
+
+img {
+  box-shadow: -2px 3px 12px grey;
+}
+
+#hearts {
+  font-size: 17px;
+  position: absolute;
+  bottom: 7px;
+}
