@@ -104,17 +104,11 @@ class App extends Component {
                 <div className="container">
                     <div className="row">
                         <div className="col-sm-6" id="image">
-                            <img src="http://www.rookiemag.com/wp-content/uploads/2015/04/1430190142Cynthia-Weezer-Text-by-Jenny.jpg"
-                                 alt="" className="img-responsive"/>
+
                         </div>
                         <div className="col-sm-6" id="info">
                             <h3 id="infoHeader">Hope you enjoyed this!</h3>
                             <p id="infoText">Check out my <a href="https://ellinzhao.github.io/holzer-truisms/display.html">Jenny Holzer homage</a> for more art!</p>
-                            <div id="hearts">
-                                <i className="fa fa-heart" aria-hidden="true"></i> &emsp;
-                                <i className="fa fa-heart" aria-hidden="true"></i> &emsp;
-                                <i className="fa fa-heart" aria-hidden="true"></i>
-                            </div>
                         </div>
                     </div>
                 </div>
