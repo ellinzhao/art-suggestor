@@ -1,6 +1,15 @@
+@font-face {
+  font-family: 'Garamond';
+  src: url('./garamond/AGaramondPro-Regular.otf');
+}
+
+
+body {
+  font-family: 'Garamond', serif;
+}
 
 header {
-  font-family: sans-serif;
+  font-family: serif;
   margin: 40px 0 40px 30px;
 }
 
@@ -24,7 +33,7 @@ button {
 }
 
 .col-sm-6 {
-  font-family: sans-serif;
+  font-family: serif;
   padding: 0;
 }
 
