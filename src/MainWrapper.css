@@ -1,43 +1,51 @@
+
+#page {
+  display: none;
+
+}
+
+#loading {
+  display: block;
+  font-family: 'Garamond', serif;
+}
+
+
 @font-face {
   font-family: 'Garamond';
   src: url('./garamond/AGaramondPro-Regular.otf');
 }
 
-
-body {
-  font-family: 'Garamond', serif;
-}
-
 header {
-  font-family: serif;
+  font-family: 'Garamond', serif;
   margin: 40px 0 40px 30px;
 }
 
 button {
-  background-color: Transparent;
-  background-repeat: no-repeat;
+  background-color: transparent;
   border: none;
-  cursor:pointer;
+  cursor: pointer;
   overflow: hidden;
-  outline:none;
+  outline: none;
 }
 
 .fa-smile-o:hover {
   color: green;
 }
+
 .fa-meh-o:hover {
   color: blue;
 }
+
 .fa-frown-o:hover {
   color: red;
 }
 
 .col-sm-6 {
-  font-family: serif;
+  font-family: 'Garamond', serif;
   padding: 0;
 }
 
-#info {
+#info-container {
   margin-top: 60px;
   outline: solid grey 1px;
   height: 200px;
@@ -57,16 +65,9 @@ p {
   font-size: 17px;
 }
 
-#image {
-  height: 80vh;
-}
-
 img {
   box-shadow: -2px 3px 12px grey;
+  height: 100%;
+  float: right;
 }
 
-#hearts {
-  font-size: 17px;
-  position: absolute;
-  bottom: 7px;
-}

@@ -49,7 +49,7 @@ class ArtWrapper extends Component {
 
             childSnap.forEach(grandchildSnap => {
                 let score = grandchildSnap.child("score").val();
-                let id = parseInt(grandchildSnap.key);
+                let id = parseInt(grandchildSnap.key, 10);
 
                 //updating score
                 if (grandchildSnap.child("artist").val() === this.state.currAttr[0]) {
@@ -67,6 +67,8 @@ class ArtWrapper extends Component {
             });
 
             // TODO: check what happens with -1 as id?
+            // TODO: error messages
+            // TODO: change to a tags instead of buttons?
 
             this.updateState(idToDisplay, childSnap, seen);
         });
@@ -91,7 +93,7 @@ class ArtWrapper extends Component {
         return (
         <div>
             <ArtImage id={this.state.currID} link={this.state.currLink} title={this.state.currTitle}/>
-            <div className="col-sm-6" id="info">
+            <div className="col-sm-6" id="info-container">
                 <ArtCard id={this.state.currID} title={this.state.currTitle} artist={this.state.currAttr[0]} movement={this.state.currAttr[1]}/>
                 <div id="buttons">
                     <button type="button" id="like-btn" onClick={this.findArtPiece.bind(this, 1)}><i className="fa fa-smile-o"></i></button>

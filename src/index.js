@@ -5,6 +5,7 @@ import MainWrapper from './MainWrapper';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import registerServiceWorker from './registerServiceWorker';
 import * as firebase from 'firebase';
+import $ from 'jquery';
 
 
 var config = {
@@ -16,6 +17,13 @@ var config = {
     messagingSenderId: "858407690359"
 };
 firebase.initializeApp(config);
+
+
+$(document).ready(function($) {
+    $('#loading').fadeOut(700);
+    $('#page').fadeIn(700);
+});
+
 
 ReactDOM.render(<MainWrapper />, document.getElementById('root'));
 registerServiceWorker();
