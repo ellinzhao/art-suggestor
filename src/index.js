@@ -25,5 +25,6 @@ $(document).ready(function($) {
 });
 
 
+
 ReactDOM.render(<MainWrapper />, document.getElementById('root'));
 registerServiceWorker();

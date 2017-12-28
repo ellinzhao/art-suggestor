@@ -26,7 +26,7 @@ class ArtWrapper extends Component {
         // finding random art piece to display initially and resetting scores to 0
         artRef.once("value").then(snapshot => {
             snapshot.forEach(childSnap => {
-                this.artworkScores[artRef.child(childSnap.key)] = 0;
+                this.artworkScores[childSnap.key] = 0;
             });
 
             let random = Math.floor(Math.random() * Object.keys(this.artworkScores).length);
@@ -48,8 +48,9 @@ class ArtWrapper extends Component {
             let seen = this.state.seenIDs;
 
             childSnap.forEach(grandchildSnap => {
-                let score = grandchildSnap.child("score").val();
-                let id = parseInt(grandchildSnap.key, 10);
+                let idInt = grandchildSnap.key;
+                let id = parseInt(idInt, 10);
+                let score = this.artworkScores[idInt];
 
                 //updating score
                 if (grandchildSnap.child("artist").val() === this.state.currAttr[0]) {
@@ -63,12 +64,12 @@ class ArtWrapper extends Component {
                     maxScore = score;
                     idToDisplay = id;
                 }
-                artRef.child(grandchildSnap.key).update({score: score});
+                this.artworkScores[idInt] = score;
+
             });
 
-            // TODO: check what happens with -1 as id?
             // TODO: error messages
-            // TODO: change to a tags instead of buttons?
+            // TODO: change to <a> tags instead of buttons?
 
             this.updateState(idToDisplay, childSnap, seen);
         });
